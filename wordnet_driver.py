@@ -1,11 +1,12 @@
 import nltk
 import spacy
 import numpy as np
+import pickle
 from nltk.corpus import wordnet as wn
 from itertools import chain
 from retrofit.vectors import Vectors
 from retrofit.graph import Graph
-
+from retrofit.retrofit import RetroFit
 
 nlp = spacy.load('en_core_web_md')
 
@@ -49,6 +50,8 @@ for word in finalVocab:
 graph = Graph(edges)
 
 ## RetroFit
-from retrofit.retrofit import RetroFit
 retro = RetroFit()
 newVectors = retro.fit(V, graph)
+
+with open('retrofit_w2v_wordnet.pkl', 'wb') as f:
+	pickle.dump(newVectors, f)
