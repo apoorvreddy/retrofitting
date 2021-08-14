@@ -1,5 +1,4 @@
 import numpy as np
-from typing import Mapping, MutableMapping, Sequence, Iterable, List, Set, Any
 
 class Vectors(object):
 	def __init__(self, *args):

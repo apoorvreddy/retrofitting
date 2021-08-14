@@ -1,7 +1,6 @@
 import numpy as np
 from retrofit.graph import Graph
 from retrofit.vectors import Vectors
-from typing import Mapping, MutableMapping, Sequence, Iterable, List, Set
 from scipy import sparse
 from tqdm import tqdm
 	
@@ -10,6 +9,7 @@ class RetroFit(object):
 		self.iterations = iterations
 		self.alpha = alpha
 		self.beta = beta
+
 	def fit(self, vectors, graph):
 		# initialize new vectors with a copy of the given vectors
 		newVectors = Vectors(vectors)
@@ -21,13 +21,14 @@ class RetroFit(object):
 		if self.beta is None:
 			# if beta is not specified, set beta_ij to 1/indegree(i)
 			# update equation is faster too as this removes need for matrix multiplies
-			# sum of eta_ij over j is 1
+			# sum of beta_ij over j is 1
 			for u in range(numV):
 				denominatorCache[u] = 1.0 + self.alpha*graph.getInDegree(u)
 			for it in tqdm(range(self.iterations)):
 				for u in tqdm(range(numV), leave=False):
 					if graph.getInDegree(u) > 0:
 						nbrs = graph.neighbors(u)
+						# online update
 						numerator = newVectors.vectors[nbrs].sum(axis=0)/(1.0 * graph.getInDegree(u)) + self.alpha * vectors.vectors[u]
 						denominator = denominatorCache[u]
 						newVectors.vectors[u] = numerator/denominator
@@ -40,6 +41,7 @@ class RetroFit(object):
 			for it in tqdm(range(self.iterations)):
 				for u in tqdm(range(numV), leave=False):
 					if graph.getInDegree(u) > 0:
+						# online update
 						numerator = sparse.csr_matrix.dot(betasp.getrow(u), newVectors.vectors) + self.alpha * vectors.vectors[u]
 						denominator = denominatorCache[u]
 						newVectors.vectors[u] = numerator/denominator

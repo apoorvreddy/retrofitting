@@ -3,17 +3,16 @@ import spacy
 import numpy as np
 from nltk.corpus import wordnet as wn
 from itertools import chain
-
 from retrofit.vectors import Vectors
 from retrofit.graph import Graph
 
 
 nlp = spacy.load('en_core_web_md')
 
-# take unigram and word-only tokens from wordnet
+## take unigram and word-only tokens from wordnet
 wordnetVocab = [word for word in wn.words() if '_' not in word and word.isalpha() and '-' not in word]
 
-# get WordVectors
+## get WordVectors
 doc = ' '.join(wordnetVocab)
 XV = nlp(doc)
 
@@ -25,7 +24,7 @@ for i, xv in enumerate(XV):
 		finalVocab.append(str(XV[i]))
 		finalVectors.append(XV[i].vector)
 
-# cast final vectors to a 2d numpy array
+## cast final vectors to a 2d numpy array
 finalVectors = np.array(finalVectors)
 
 print("Vectors Shape", finalVectors.shape)
@@ -36,7 +35,7 @@ idx2word = {v:k for k, v in word2idx.items()}
 V = Vectors(word2idx, finalVectors)
 
 
-# construct the graph
+## construct the graph
 finalVocab = set(finalVocab)
 
 edges = []
@@ -49,7 +48,7 @@ for word in finalVocab:
 
 graph = Graph(edges)
 
-# ## RetroFit
+## RetroFit
 from retrofit.retrofit import RetroFit
 retro = RetroFit()
 newVectors = retro.fit(V, graph)

@@ -1,6 +1,4 @@
 from collections import defaultdict
-from typing import Mapping, MutableMapping, Sequence, Iterable, List, Set, Any
-
 
 class Graph(object):
 	def __init__(self, edges):
