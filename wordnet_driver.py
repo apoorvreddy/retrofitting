@@ -13,11 +13,9 @@ nlp = spacy.load('en_core_web_md')
 # take unigram and word-only tokens from wordnet
 wordnetVocab = [word for word in wn.words() if '_' not in word and word.isalpha() and '-' not in word]
 
-print("len1", len(wordnetVocab))
-#
+# get WordVectors
 doc = ' '.join(wordnetVocab)
 XV = nlp(doc)
-print("lenXV", len(XV))
 
 # take intersection of words in wordnetVocab and spacy's wordvector vocab
 finalVocab = []
@@ -51,8 +49,7 @@ for word in finalVocab:
 
 graph = Graph(edges)
 
-
 # ## RetroFit
-# from retrofit.retrofit import RetroFit
-# retro = RetroFit(V, graph)
-# newVectors = retro.fit(verbose=True)
+from retrofit.retrofit import RetroFit
+retro = RetroFit()
+newVectors = retro.fit(V, graph)
